@@ -50,17 +50,17 @@ window.addEventListener('load', function(){
                 pressed: false,
             }
             //event listeners
-            window.addEventListener('mousedown', (event) => {
+            canvas.addEventListener('mousedown', event => {
                 this.mouse.x = event.offsetX;
                 this.mouse.y = event.offsetY;
                 this.mouse.pressed = true;
             })
-            window.addEventListener('mouseup', (event) => {
+            canvas.addEventListener('mouseup', event => {
                 this.mouse.x = event.offsetX;
                 this.mouse.y = event.offsetY;
                 this.mouse.pressed = false;
             })
-            window.addEventListener('mousemove', (event) => {
+            canvas.addEventListener('mousemove', event => {
                 this.mouse.x = event.offsetX;
                 this.mouse.y = event.offsetY;
                 console.log(this.mouse.x)
