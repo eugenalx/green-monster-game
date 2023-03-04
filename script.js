@@ -1,8 +1,8 @@
 window.addEventListener("load", function () {
   const canvas = document.getElementById("canvas1");
   const ctx = canvas.getContext("2d");
-  canvas.width = 960;
-  canvas.height = 570;
+  canvas.width = 1280;
+  canvas.height = 720;
   ctx.fillStyle = "#fff234";
   ctx.lineWidth = 2;
   ctx.strokeStyle = "white";
@@ -20,8 +20,8 @@ window.addEventListener("load", function () {
       this.speedModifier = 5;
       this.spriteWidth = 255;
       this.spriteHeight = 255;
-      this.width = this.spriteWidth * 0.5;
-      this.height = this.spriteHeight * 0.5;
+      this.width = this.spriteWidth * 0.8;
+      this.height = this.spriteHeight * 0.8;
       this.spriteX;
       this.spriteY;
       this.frameX = 0;
@@ -115,14 +115,14 @@ window.addEventListener("load", function () {
       this.game = game;
       this.collisionX = Math.random() * this.game.width;
       this.collisionY = Math.random() * this.game.height;
-      this.collisionRadius = 20;
+      this.collisionRadius = 40;
       this.image = document.getElementById("obstacles");
       this.spriteWidth = 250;
       this.spriteHeight = 250;
-      this.width = this.spriteWidth * 0.5;
-      this.height = this.spriteHeight * 0.5;
+      this.width = this.spriteWidth * 0.8;
+      this.height = this.spriteHeight * 0.8;
       this.spriteX = this.collisionX - this.width * 0.4 - 13;
-      this.spriteY = this.collisionY - this.height * 0.4 - 45;
+      this.spriteY = this.collisionY - this.height * 0.4 -  65;
       this.frameX = Math.floor(Math.random() * 4);
       this.frameY = Math.floor(Math.random() * 3);
     }
@@ -154,25 +154,26 @@ window.addEventListener("load", function () {
         context.stroke();
       }
     }
+    update(){};
   }
 
   class Egg {
     constructor(game) {
       this.game = game;
-      this.collisionRadius = 40;
+      this.collisionRadius = 30;
       this.margin = this.collisionRadius * 2;
       this.collisionX = this.margin + (Math.random() * (this.game.width - this.margin * 2));
-      this.collisionY = this.game.topMargin + (Math.random() * (this.game.height-this.game.topMargin - this.margin));
+      this.collisionY = this.game.topMargin +(Math.random() * (this.game.height-this.game.topMargin - this.margin));
       this.image = document.getElementById("egg");
       this.spriteWidth = 110;
       this.spriteHeight = 135;
-      this.width = this.spriteWidth;
-      this.height = this.spriteHeight;
+      this.width = this.spriteWidth * 0.8;
+      this.height = this.spriteHeight * 0.8;
       this.spriteX;
       this.spriteY;
     }
     draw(context) {
-      context.drawImage(this.image, this.spriteX, this.spriteY);
+      context.drawImage(this.image, this.spriteX, this.spriteY, this.width, this.height);
       if (this.game.debug) {
         context.beginPath();
         context.arc(
@@ -220,6 +221,7 @@ window.addEventListener("load", function () {
       this.eggInterval = 500;
       this.numberOfObstacles = 10;
       this.maxEggs = 10;
+      this.gameObjects = [];
       this.obstacles = [];
       this.eggs = [];
       this.mouse = {
@@ -251,13 +253,24 @@ window.addEventListener("load", function () {
     render(context, deltaTime) {
       if (this.timer > this.interval) {
         context.clearRect(0, 0, this.width, this.height);
-        this.obstacles.forEach(obstacle => obstacle.draw(context));
-        this.eggs.forEach(egg => {
-            egg.draw(context);
-            egg.update();
+        this.gameObjects = [ this.player, ...this.eggs, ...this.obstacles,];
+        // sort by vertical position
+        this.gameObjects.sort((a, b) => {
+            return a.collisionY - b.collisionY;
         });
-        this.player.draw(context);
-        this.player.update();
+        this.gameObjects.forEach(object => {
+            object.draw(context);
+            object.update();
+        });
+        // sort by vertical position
+        this.gameObjects.sort((a, b) => {
+            return a.collisionY - b.collisionY;
+        });
+        // sort by vertical position
+        this.gameObjects.sort((a, b) => {
+            return a.collisionY - b.collisionY;
+        });
+        
         this.timer = 0;
       }
       this.timer += deltaTime;
