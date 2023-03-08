@@ -34,8 +34,8 @@ window.addEventListener("load", function () {
       this.dx = 0;
       this.dy = 0;
       this.speedModifier = 5;
-      this.spriteWidth = 255;
-      this.spriteHeight = 255;
+      this.spriteWidth = 256;
+      this.spriteHeight = 256;
       this.width = this.spriteWidth * 0.8;
       this.height = this.spriteHeight * 0.8;
       this.spriteX;
@@ -484,9 +484,9 @@ window.addEventListener("load", function () {
       this.topMargin = 260;
       this.debug = true;
       this.player = new Player(this);
-      this.fps = 60;
+      this.fps = 65;
       this.timer = 0;
-      this.interval = 960 / this.fps;
+      this.interval = 1000 / this.fps;
       this.eggTimer = 0;
       this.eggInterval = 1000;
       this.numberOfObstacles = 10;
