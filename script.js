@@ -1,8 +1,22 @@
 window.addEventListener("load", function () {
   const canvas = document.getElementById("canvas1");
   const ctx = canvas.getContext("2d");
-  canvas.width = 1280;
-  canvas.height = 720;
+  console.log(this.innerWidth)
+  if(this.innerWidth > 1280){
+     canvas.width = 1280;
+     canvas.height = 720;
+  } else if (this.innerWidth > 960) {
+    canvas.width = 960;
+    canvas.height = 680;
+} else if (this.innerWidth > 720) {
+    canvas.width = 720;
+    canvas.height = 560;
+  } else {
+    canvas.width = 420;
+    canvas.height = 300;
+  }
+
+   
   ctx.fillStyle = "#fff234";
   ctx.lineWidth = 2;
   ctx.strokeStyle = "black";
@@ -105,7 +119,6 @@ window.addEventListener("load", function () {
         this.collisionY = this.game.height - this.collisionRadius;
       // collision with obstacles
       this.game.obstacles.forEach((obstacle) => {
-        // [(distance < sumOfRadii), distance, sumOfRadii, dx, dy]
         let [collision, distance, sumOfRadii, dx, dy] =
           this.game.checkCollision(this, obstacle);
         if (collision) {
@@ -262,7 +275,7 @@ window.addEventListener("load", function () {
       this.height = this.spriteHeight;
       this.spriteX;
       this.spriteY;
-      this.speedY = 3 + Math.random();
+      this.speedY = 1 + Math.random();
       this.frameX = 0;
       this.frameY = Math.floor(Math.random() * 2);
     }
@@ -300,14 +313,16 @@ window.addEventListener("load", function () {
       this.spriteY = this.collisionY - this.height * 0.5;
       //move to safety
       if (this.collisionY < this.game.topMargin) {
+        
         this.markedForDeletion = true;
         this.game.removeGameObjects();
-        if (!this.game.gameOver) this.game.score++;
+        
         for (let i = 0; i < 3; i++) {
           this.game.particles.push(
             new Firefly(this.game, this.collisionX, this.collisionY, "pink")
           );
         }
+        if (!this.game.gameOver) this.game.score++;
       }
       //collision with objects
       let collisionObjects = [this.game.player, ...this.game.obstacles];
@@ -340,7 +355,7 @@ window.addEventListener("load", function () {
     constructor(game) {
       this.game = game;
       this.collisionRadius = 30;
-      this.speedX = Math.random() * 3 + 2;
+      this.speedX = Math.random() * 1 + 2;
       this.image = document.getElementById("toads");
       this.spriteWidth = 140;
       this.spriteHeight = 260;
@@ -471,7 +486,7 @@ window.addEventListener("load", function () {
       this.player = new Player(this);
       this.fps = 60;
       this.timer = 0;
-      this.interval = 1000 / this.fps;
+      this.interval = 960 / this.fps;
       this.eggTimer = 0;
       this.eggInterval = 1000;
       this.numberOfObstacles = 10;
@@ -484,7 +499,7 @@ window.addEventListener("load", function () {
       this.enemies = [];
       this.gameOver = false;
       this.score = 0;
-      this.winningScore = 5;
+      this.winningScore = 10;
       this.lostHatchlings = 0;
       this.mouse = {
         x: this.width / 2,
@@ -524,22 +539,14 @@ window.addEventListener("load", function () {
           ...this.hatchlings,
           ...this.particles,
         ];
-        // sort by vertical position
+        //sort by vertical position
         this.gameObjects.sort((a, b) => {
           return a.collisionY - b.collisionY;
         });
-        this.gameObjects.forEach((object) => {
+        this.gameObjects.forEach(object => {
           object.draw(context);
           object.update(deltaTime);
-        });
-        // sort by vertical position
-        this.gameObjects.sort((a, b) => {
-          return a.collisionY - b.collisionY;
-        });
-        // sort by vertical position
-        this.gameObjects.sort((a, b) => {
-          return a.collisionY - b.collisionY;
-        });
+        });     
         this.timer = 0;
       }
       this.timer += deltaTime;
@@ -554,9 +561,8 @@ window.addEventListener("load", function () {
       } else {
         this.eggTimer += deltaTime;
       }
-
       //print score text
-      context.save();
+      context.save(); 
       context.textAlign = "left";
       context.fillText("Score: " + this.score, 25, 50);
       if (this.debug) {
@@ -566,8 +572,9 @@ window.addEventListener("load", function () {
 
       // win-lose message
       if (this.score > this.winningScore) {
+       
         this.gameOver = true;
-        context.save();
+        context.save(); 
         context.fillStyle = "rgba(0, 0, 0, 0.5)";
         context.fillRect(0, 0, this.width, this.height);
         context.fillStyle = "white";
@@ -583,7 +590,7 @@ window.addEventListener("load", function () {
         }
         context.font = "130px Arial";
         context.fillText(message1, this.width * 0.5, this.height * 0.5 - 20);
-        context.font = "40px Times New Roman";
+        context.font = "40px Arial";
         context.fillText(message2, this.width * 0.5, this.height * 0.5 + 30);
         context.fillText(
           `Final score ${this.score}. Press "R" to but the butheads!`,
@@ -591,7 +598,7 @@ window.addEventListener("load", function () {
           this.height * 0.5 + 80
         );
         context.restore();
-      }
+        }
     }
 
     checkCollision(objA, objB) {
@@ -670,17 +677,17 @@ window.addEventListener("load", function () {
       }
     }
   }
+  
   const game = new Game(canvas);
   game.init();
-  console.log(game);
   let lastTime = 0;
+  
   function animate(timeStamp) {
     const deltaTime = timeStamp - lastTime;
     lastTime = timeStamp;
-
     game.render(ctx, deltaTime);
-    requestAnimationFrame(animate);
+   requestAnimationFrame(animate);
   }
-
+ 
   animate(0);
 });
